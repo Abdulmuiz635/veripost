@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Builds
+dist/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Prisma
+# (keep schema and migrations; ignore generated client)
+backend/src/generated/
+
+# SQLite dev database
+*.db
+*.db-journal
+*.sqlite
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

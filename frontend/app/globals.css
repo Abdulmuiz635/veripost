@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Palette 1: Verified Trust & Digital Innovation.
+   Channels are "R G B" so Tailwind can apply alpha. */
+:root {
+  --bg: 246 248 251;
+  --card: 255 255 255;
+  --card-raised: 249 250 252;
+  --border: 226 232 240;
+  --fg: 11 27 43;
+  --muted: 71 85 105;
+  --muted-weak: 148 163 184;
+
+  --ink: 10 37 64; /* #0A2540 */
+  --teal: 0 160 210; /* slightly deepened #00C8FF for contrast on light */
+  --emerald: 4 120 87; /* #047857 */
+  --emerald-bright: 16 185 129;
+  --amber: 180 83 9; /* #B45309 */
+  --amber-bright: 217 119 6;
+  --rose: 190 18 60; /* #BE123C */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: 7 15 28; /* #070F1C */
+    --card: 15 28 48; /* #0F1C30 */
+    --card-raised: 19 34 56;
+    --border: 30 46 71;
+    --fg: 232 238 246;
+    --muted: 156 171 191;
+    --muted-weak: 100 116 139;
+
+    --ink: 13 33 56;
+    --teal: 56 199 255; /* brighter on dark */
+    --emerald: 16 185 129;
+    --emerald-bright: 52 211 153;
+    --amber: 217 119 6;
+    --amber-bright: 245 158 11;
+    --rose: 244 63 94;
+  }
+}
+
+* {
+  border-color: rgb(var(--border));
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle engineered grid, used behind heroes and the phone frame. */
+.bg-grid {
+  background-image:
+    linear-gradient(rgb(var(--ink) / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--ink) / 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+@media (prefers-color-scheme: dark) {
+  .bg-grid {
+    background-image:
+      linear-gradient(rgb(var(--teal) / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--teal) / 0.06) 1px, transparent 1px);
+  }
+}
+
+/* Postcode shown as a first-class code object: spaced monospace segments. */
+.postcode {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 3px solid rgb(var(--teal) / 0.9);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Thin scrollbars inside data panels. */
+.scroll-slim::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.scroll-slim::-webkit-scrollbar-thumb {
+  background: rgb(var(--muted-weak) / 0.5);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}

@@ -1,0 +1,73 @@
+// VeriPost data model.
+// Design note: we store NO real identity. customerRef is a pseudonymous token
+// supplied by the client. Demo runs on test/sandbox data only (NDPA pass/fail gate).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite for zero-infra local dev. For production, change provider to
+// "postgresql" and point DATABASE_URL at Postgres. No code changes needed.
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id            String         @id @default(cuid())
+  name          String
+  createdAt     DateTime       @default(now())
+  apiKeys       ApiKey[]
+  verifications Verification[]
+}
+
+model ApiKey {
+  id        String    @id @default(cuid())
+  client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId  String
+  label     String
+  keyHash   String    @unique // sha256 of the raw key; raw key is shown once
+  keyPrefix String // first chars, for display e.g. vp_live_ab12…
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+
+  @@index([clientId])
+}
+
+model Verification {
+  id                   String          @id @default(cuid())
+  client               Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId             String
+  customerRef          String // pseudonymous, client-supplied
+  claimedPostcode      String
+  resolvedAddress      String? // JSON string: administrative_address + recent_house_address
+  gpsLat               Float?
+  gpsLng               Float?
+  reversePostcode      String? // nearest postcode returned by reverse geocode
+  distanceM            Float?
+  nipostConfidence     String? // high | medium | low
+  matchDepth           String // none | state | lga | district | area | unit
+  score                Int
+  status               String // VERIFIED | FLAGGED | UNVERIFIED | REJECTED
+  presenceConfirmations Int            @default(0)
+  recordJti            String? // id of the signed VAR, retrievable for audit
+  provider             String // live | mock
+  createdAt            DateTime        @default(now())
+  presenceEvents       PresenceEvent[]
+
+  @@index([clientId, createdAt])
+  @@index([status])
+}
+
+model PresenceEvent {
+  id             String        @id @default(cuid())
+  verification   Verification? @relation(fields: [verificationId], references: [id], onDelete: SetNull)
+  verificationId String?
+  customerRef    String
+  postcode       String
+  distanceM      Float?
+  confidence     String?
+  createdAt      DateTime      @default(now())
+
+  @@index([customerRef])
+}
